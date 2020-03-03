@@ -1,28 +1,29 @@
 <?php
-
 /**
  * Pagination for pages of replies (when viewing a topic)
  *
  * @package bbPress
  * @subpackage Theme
  */
+do_action( 'bbp_template_before_pagination_loop' );
 
-?>
+if ( ! bbp_get_topic_pagination_links() ) {
+	return;
+} ?>
 
-<?php do_action( 'bbp_template_before_pagination_loop' ); ?>
+    <div class="row">
+        <div class="col-md-6">
+            <nav aria-label="<?php _e( "Navigation", "evolve" ); ?>" class="navigation">
 
-<div class="bbp-pagination">
-	<div class="bbp-pagination-count">
+				<?php bbp_topic_pagination_links(); ?>
 
-		<?php bbp_topic_pagination_count(); ?>
+            </nav>
+        </div>
+        <div class="post-meta col-md-6 text-right mb-4 mb-lg-0">
 
-	</div>
+			<?php bbp_topic_pagination_count(); ?>
 
-	<div class="pagination">
+        </div>
+    </div>
 
-		<?php bbp_topic_pagination_links(); ?>
-
-	</div>
-</div>
-
-<?php do_action( 'bbp_template_after_pagination_loop' ); ?>
+<?php do_action( 'bbp_template_after_pagination_loop' );

@@ -1,38 +1,43 @@
 <?php
-
 /**
  * Archive Forum Content Part
  *
  * @package bbPress
  * @subpackage Theme
  */
-
 ?>
 
 <div id="bbpress-forums">
 
-	<?php if ( bbp_allow_search() ) : ?>
+	<?php bbp_forum_subscription_link( array(
+		'before'      => '<div class="post-meta text-right mb-4">',
+		'after'       => '</div>',
+		'subscribe'   => evolve_get_svg( 'rss' ) . esc_html__( 'Subscribe', 'evolve' ),
+		'unsubscribe' => evolve_get_svg( 'ok' ) . esc_html__( 'Subscribed', 'evolve' )
+	) );
 
-		<div class="bbp-search-form">
+	if ( bbp_allow_search() ) : ?>
+
+        <div class="search-full-width">
 
 			<?php bbp_get_template_part( 'form', 'search' ); ?>
 
-		</div>
+        </div><!-- .search-full-width -->
 
-	<?php endif; ?>
+	<?php endif;
 
-	<?php do_action( 'bbp_template_before_forums_index' ); ?>
+	do_action( 'bbp_template_before_forums_index' );
 
-	<?php if ( bbp_has_forums() ) : ?>
+	if ( bbp_has_forums() ) :
 
-		<?php bbp_get_template_part( 'loop',     'forums'    ); ?>
+		bbp_get_template_part( 'loop', 'forums' );
 
-	<?php else : ?>
+	else :
 
-		<?php bbp_get_template_part( 'feedback', 'no-forums' ); ?>
+		bbp_get_template_part( 'feedback', 'no-forums' );
 
-	<?php endif; ?>
+	endif;
 
-	<?php do_action( 'bbp_template_after_forums_index' ); ?>
+	do_action( 'bbp_template_after_forums_index' ); ?>
 
 </div>

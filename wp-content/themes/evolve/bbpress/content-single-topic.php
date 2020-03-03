@@ -1,56 +1,56 @@
 <?php
-
 /**
  * Single Topic Content Part
  *
  * @package bbPress
  * @subpackage Theme
  */
-
 ?>
 
 <div id="bbpress-forums">
 
 	<?php if ( bbp_allow_search() ) : ?>
 
-		<div class="bbp-search-form">
+        <div class="search-full-width">
 
 			<?php bbp_get_template_part( 'form', 'search' ); ?>
 
-		</div>
+        </div><!-- .search-full-width -->
 
-	<?php endif; ?>
+	<?php endif;
 
-	<?php do_action( 'bbp_template_before_single_topic' ); ?>
+	do_action( 'bbp_template_before_single_topic' );
 
-	<?php if ( post_password_required() ) : ?>
+	if ( post_password_required() ) :
 
-		<?php bbp_get_template_part( 'form', 'protected' ); ?>
+		bbp_get_template_part( 'form', 'protected' );
 
-	<?php else : ?>
+	else :
 
-		<?php bbp_topic_tag_list( bbp_get_topic_id(), array( 'before' => '<div class="bbp-topic-tags"><p>' . esc_html__( 'Tags:', 'evolve' ) . '&nbsp;', 'sep'    => ' ', 'after'  => '</p></div>' ) ); ?>
+		if ( bbp_show_lead_topic() ) :
 
-		<?php if ( bbp_show_lead_topic() ) : ?>
+			bbp_get_template_part( 'content', 'single-topic-lead' );
 
-			<?php bbp_get_template_part( 'content', 'single-topic-lead' ); ?>
+			bbp_topic_tag_list( bbp_get_topic_id(), array(
+				'before' => '<div class="post-meta mb-4">' . evolve_get_svg( 'tag' ),
+				'after'  => '</div>',
+				'sep'    => ', '
+			) );
 
-		<?php endif; ?>
+		endif;
 
-		<?php if ( bbp_has_replies() ) : ?>
-			<div class="top_pagination">
-			<?php bbp_get_template_part( 'pagination', 'replies' ); ?>
-			</div>
-			<?php bbp_get_template_part( 'loop',       'replies' ); ?>
+		if ( bbp_has_replies() ) :
 
-			<?php bbp_get_template_part( 'pagination', 'replies' ); ?>
+			bbp_get_template_part( 'loop', 'replies' );
 
-		<?php endif; ?>
+			bbp_get_template_part( 'pagination', 'replies' );
 
-		<?php bbp_get_template_part( 'form', 'reply' ); ?>
+		endif;
 
-	<?php endif; ?>
+		bbp_get_template_part( 'form', 'reply' );
 
-	<?php do_action( 'bbp_template_after_single_topic' ); ?>
+	endif;
 
-</div>
+	do_action( 'bbp_template_after_single_topic' ); ?>
+
+</div><!-- #bbpress-forums -->

@@ -1,39 +1,34 @@
 <?php
-
 /**
  * Forums Loop
  *
  * @package bbPress
  * @subpackage Theme
  */
+do_action( 'bbp_template_before_forums_loop' ); ?>
 
-?>
+    <ul id="forums-list-<?php bbp_forum_id(); ?>" class="bbp-forums">
 
-<?php do_action( 'bbp_template_before_forums_loop' ); ?>
+        <li class="row bbp-header">
 
-<ul id="forums-list-<?php bbp_forum_id(); ?>" class="bbp-forums">
+            <ul class="col forum-titles">
+                <li class="bbp-forum-info"><?php esc_html_e( 'Forum', 'evolve' ); ?></li>
+                <li class="bbp-forum-topic-count"><?php esc_html_e( 'Topics', 'evolve' ); ?></li>
+                <li class="bbp-forum-reply-count"><?php bbp_show_lead_topic() ? esc_html_e( 'Replies', 'evolve' ) : esc_html_e( 'Posts', 'evolve' ); ?></li>
+                <li class="bbp-forum-freshness"><?php esc_html_e( 'Freshness', 'evolve' ); ?></li>
+            </ul>
 
-	<li class="bbp-header">
+        </li><!-- .bbp-header -->
 
-		<ul class="forum-titles">
-			<li class="bbp-forum-info"><?php _e( 'Forum', 'bbpress' ); ?></li>
-			<li class="bbp-forum-topic-count"><?php _e( 'Topics', 'bbpress' ); ?></li>
-			<li class="bbp-forum-reply-count"><?php bbp_show_lead_topic() ? _e( 'Replies', 'bbpress' ) : _e( 'Posts', 'bbpress' ); ?></li>
-			<li class="bbp-forum-freshness"><?php _e( 'Freshness', 'bbpress' ); ?></li>
-		</ul>
+        <li class="bbp-body">
 
-	</li><!-- .bbp-header -->
+			<?php while ( bbp_forums() ) : bbp_the_forum();
 
-	<li class="bbp-body">
+				bbp_get_template_part( 'loop', 'single-forum' );
 
-		<?php while ( bbp_forums() ) : bbp_the_forum(); ?>
+			endwhile; ?>
 
-			<?php bbp_get_template_part( 'loop', 'single-forum' ); ?>
+        </li><!-- .bbp-body -->
+    </ul><!-- .bbp-forums -->
 
-		<?php endwhile; ?>
-
-	</li><!-- .bbp-body -->
-
-</ul><!-- .forums-directory -->
-
-<?php do_action( 'bbp_template_after_forums_loop' ); ?>
+<?php do_action( 'bbp_template_after_forums_loop' );

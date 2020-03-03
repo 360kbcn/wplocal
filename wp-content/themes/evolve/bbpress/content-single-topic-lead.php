@@ -1,102 +1,125 @@
 <?php
-
 /**
  * Single Topic Lead Content Part
  *
  * @package bbPress
  * @subpackage Theme
  */
+do_action( 'bbp_template_before_lead_topic' ); ?>
 
-?>
+    <ul id="bbp-topic-<?php bbp_topic_id(); ?>-lead" class="bbp-forums bbp-lead-topic">
+        <li class="row bbp-header">
+            <div class="col bbp-topic-title">
 
-<?php do_action( 'bbp_template_before_lead_topic' ); ?>
+				<?php if ( bbp_is_topic_open() ) {
+					echo '<span class="badge badge-pill badge-success mr-2">' . __( 'Open', 'evolve' ) . '</span>';
+				} else {
+					echo '<span class="badge badge-pill badge-warning mr-2">' . __( 'Closed', 'evolve' ) . '</span>';
+				}
+				if ( bbp_is_topic_sticky() ) {
+					echo '<span class="badge badge-pill badge-secondary">' . __( 'Pinned', 'evolve' ) . '</span>';
+				} ?>
 
-<ul id="bbp-topic-<?php bbp_topic_id(); ?>-lead" class="bbp-lead-topic">
 
-	<li class="bbp-header">
+            </div><!-- .bbp-topic-title -->
+            <div class="col post-meta m-0 text-right bbp-topic-content">
 
-		<div class="bbp-topic-author"><?php  _e( 'Creator',  'bbpress' ); ?></div><!-- .bbp-topic-author -->
+				<?php
+				bbp_user_favorites_link( array(
+					'before'    => '<span class="mr-3">',
+					'after'     => '</span>',
+					'favorite'  => evolve_get_svg( 'heart' ) . esc_html__( 'Favorite', 'evolve' ),
+					'favorited' => evolve_get_svg( 'ok' ) . esc_html__( 'Favorited', 'evolve' )
+				) );
 
-		<div class="bbp-topic-content">
+				bbp_user_subscribe_link( array(
+					'before'      => ' ',
+					'subscribe'   => evolve_get_svg( 'rss' ) . esc_html__( 'Subscribe', 'evolve' ),
+					'unsubscribe' => evolve_get_svg( 'ok' ) . esc_html__( 'Subscribed', 'evolve' )
+				) ); ?>
 
-			<?php _e( 'Topic', 'bbpress' ); ?>
+            </div><!-- .bbp-topic-content -->
+        </li><!-- .bbp-header -->
 
-			<?php bbp_user_subscribe_link(); ?>
+        <li class="bbp-body">
+            <div id="post-<?php bbp_topic_id(); ?>" <?php bbp_topic_class( '', array( 'topic-lead' ) ); ?>>
 
-			<?php bbp_user_favorites_link(); ?>
+                <div class="row align-items-center">
+                    <div class="col-xl-auto comment-author vcard">
 
-		</div><!-- .bbp-topic-content -->
+						<?php do_action( 'bbp_theme_before_topic_author_details' );
 
-	</li><!-- .bbp-header -->
+						echo '<b class="fn">';
+						bbp_topic_author_link( array( 'type' => 'name', 'show_role' => false ) );
 
-	<li class="bbp-body">
+						if ( user_can( bbp_get_topic_author_id(), 'moderate' ) ) {
+							echo '<span class="badge badge-pill badge-primary ml-2">';
+						} else {
+							echo '<span class="badge badge-pill badge-light ml-2">';
+						}
+						bbp_topic_author_link( array( 'type' => '', 'show_role' => true ) );
+						echo '</span></b>';
 
-		<div class="bbp-topic-header">
+						if ( bbp_is_user_keymaster() ) :
 
-			<div class="bbp-meta">
+							do_action( 'bbp_theme_before_topic_author_admin_details' );
 
-				<span class="bbp-topic-post-date"><?php bbp_topic_post_date(); ?></span>
+							echo '&nbsp;&nbsp;';
+							bbp_author_ip( $args = array(
+								'post_id' => bbp_get_topic_id(),
+								'before'  => '<span class="comment-meta">(',
+								'after'   => ')</span>'
+							) );
 
-				<a href="<?php bbp_topic_permalink(); ?>" class="bbp-topic-permalink">#<?php bbp_topic_id(); ?></a>
+							do_action( 'bbp_theme_after_topic_author_admin_details' );
 
-				<?php do_action( 'bbp_theme_before_topic_admin_links' ); ?>
+						endif;
 
-				<?php bbp_topic_admin_links(); ?>
+						do_action( 'bbp_theme_after_topic_author_details' ); ?>
 
-				<?php do_action( 'bbp_theme_after_topic_admin_links' ); ?>
+                    </div>
+                    <div class="col-auto comment-meta">
 
-			</div><!-- .bbp-meta -->
+						<?php bbp_topic_post_date(); ?>
 
-		</div><!-- .bbp-topic-header -->
+                        <a href="<?php bbp_topic_permalink(); ?>"
+                           class="bbp-permalink mx-2">#<?php bbp_topic_id(); ?></a>
 
-		<div id="post-<?php bbp_topic_id(); ?>" <?php bbp_topic_class(); ?>>
+						<?php if ( bbp_is_topic_sticky() ) {
+							echo ' ' . evolve_get_svg( 'pin' );
+						} ?>
 
-			<div class="bbp-topic-author">
+                    </div>
+                    <div class="col">
 
-				<?php do_action( 'bbp_theme_before_topic_author_details' ); ?>
+						<?php bbp_topic_author_link( array(
+							'size'      => '60',
+							'type'      => 'avatar',
+							'show_role' => false
+						) ); ?>
 
-				<?php bbp_topic_author_link( array( 'sep' => '<br />', 'show_role' => true ) ); ?>
+                    </div>
+                </div>
+                <div class="bbp-content">
 
-				<?php if ( bbp_is_user_keymaster() ) : ?>
+					<?php do_action( 'bbp_theme_before_topic_content' );
 
-					<?php do_action( 'bbp_theme_before_topic_author_admin_details' ); ?>
+					bbp_topic_content();
 
-					<div class="bbp-topic-ip"><?php bbp_author_ip( bbp_get_topic_id() ); ?></div>
+					do_action( 'bbp_theme_after_topic_content' ); ?>
 
-					<?php do_action( 'bbp_theme_after_topic_author_admin_details' ); ?>
+                </div><!-- .bbp-topic-content -->
+                <div class="post-meta m-0 mt-4 bbp-meta">
 
-				<?php endif; ?>
+					<?php do_action( 'bbp_theme_before_topic_admin_links' );
 
-				<?php do_action( 'bbp_theme_after_topic_author_details' ); ?>
+					bbp_topic_admin_links( array( 'sep' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' ) );
 
-			</div><!-- .bbp-topic-author -->
+					do_action( 'bbp_theme_after_topic_admin_links' ); ?>
 
-			<div class="bbp-topic-content">
+                </div><!-- .bbp-meta -->
+            </div><!-- #post-<?php bbp_topic_id(); ?> -->
+        </li><!-- .bbp-body -->
+    </ul><!-- #bbp-topic-<?php bbp_topic_id(); ?>-lead -->
 
-				<?php do_action( 'bbp_theme_before_topic_content' ); ?>
-
-				<?php bbp_topic_content(); ?>
-
-				<?php do_action( 'bbp_theme_after_topic_content' ); ?>
-
-			</div><!-- .bbp-topic-content -->
-
-		</div><!-- #post-<?php bbp_topic_id(); ?> -->
-
-	</li><!-- .bbp-body -->
-
-	<li class="bbp-footer">
-
-		<div class="bbp-topic-author"><?php  _e( 'Creator',  'bbpress' ); ?></div>
-
-		<div class="bbp-topic-content">
-
-			<?php _e( 'Topic', 'bbpress' ); ?>
-
-		</div><!-- .bbp-topic-content -->
-
-	</li>
-
-</ul><!-- #bbp-topic-<?php bbp_topic_id(); ?>-lead -->
-
-<?php do_action( 'bbp_template_after_lead_topic' ); ?>
+<?php do_action( 'bbp_template_after_lead_topic' );

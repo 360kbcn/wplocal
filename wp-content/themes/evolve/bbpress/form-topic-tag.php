@@ -1,117 +1,115 @@
 <?php
-
 /**
  * Edit Topic Tag
  *
  * @package bbPress
  * @subpackage Theme
  */
+if (current_user_can('edit_topic_tags')) :
+    ?>
 
-?>
+    <div id="edit-topic-tag-<?php bbp_topic_tag_id(); ?>" class="bbp-topic-tag-form">
 
-<?php if ( current_user_can( 'edit_topic_tags' ) ) : ?>
+        <fieldset class="bbp-form" id="bbp-edit-topic-tag">
 
-	<div id="edit-topic-tag-<?php bbp_topic_tag_id(); ?>" class="bbp-topic-tag-form">
+            <legend><?php printf(__('Manage Tag: "%s"', 'evolve'), bbp_get_topic_tag_name()); ?></legend>
 
-		<fieldset class="bbp-form" id="bbp-edit-topic-tag">
+            <fieldset class="bbp-form" id="tag-rename">
 
-			<legend><?php printf( __( 'Manage Tag: "%s"', 'bbpress' ), bbp_get_topic_tag_name() ); ?></legend>
+                <legend><?php esc_html_e('Rename', 'evolve'); ?></legend>
 
-			<fieldset class="bbp-form" id="tag-rename">
+                <div class="bbp-template-notice info">
+                    <p><?php esc_html_e('Leave the slug empty to have one automatically generated.', 'evolve'); ?></p>
+                </div>
 
-				<legend><?php _e( 'Rename', 'bbpress' ); ?></legend>
+                <div class="bbp-template-notice">
+                    <p><?php esc_html_e('Changing the slug affects its permalink. Any links to the old slug will stop working.', 'evolve'); ?></p>
+                </div>
 
-				<div class="bbp-template-notice info">
-					<p><?php _e( 'Leave the slug empty to have one automatically generated.', 'bbpress' ); ?></p>
-				</div>
+                <form id="rename_tag" name="rename_tag" method="post" action="<?php the_permalink(); ?>">
 
-				<div class="bbp-template-notice">
-					<p><?php _e( 'Changing the slug affects its permalink. Any links to the old slug will stop working.', 'bbpress' ); ?></p>
-				</div>
+                    <div>
+                        <label for="tag-name"><?php esc_html_e('Name:', 'evolve'); ?></label>
+                        <input type="text" id="tag-name" name="tag-name" size="20" maxlength="40" tabindex="<?php bbp_tab_index(); ?>" value="<?php echo esc_attr(bbp_get_topic_tag_name()); ?>" />
+                    </div>
 
-				<form id="rename_tag" name="rename_tag" method="post" action="<?php the_permalink(); ?>">
+                    <div>
+                        <label for="tag-slug"><?php esc_html_e('Slug:', 'evolve'); ?></label>
+                        <input type="text" id="tag-slug" name="tag-slug" size="20" maxlength="40" tabindex="<?php bbp_tab_index(); ?>" value="<?php echo esc_attr(apply_filters('editable_slug', bbp_get_topic_tag_slug())); ?>" />
+                    </div>
 
-					<div>
-						<label for="tag-name"><?php _e( 'Name:', 'bbpress' ); ?></label>
-						<input type="text" id="tag-name" name="tag-name" size="20" maxlength="40" tabindex="<?php bbp_tab_index(); ?>" value="<?php echo esc_attr( bbp_get_topic_tag_name() ); ?>" />
-					</div>
+                    <div class="bbp-submit-wrapper">
+                        <button type="submit" tabindex="<?php bbp_tab_index(); ?>" class="btn btn-sm"><?php esc_attr_e('Update', 'evolve'); ?></button>
 
-					<div>
-						<label for="tag-slug"><?php _e( 'Slug:', 'bbpress' ); ?></label>
-						<input type="text" id="tag-slug" name="tag-slug" size="20" maxlength="40" tabindex="<?php bbp_tab_index(); ?>" value="<?php echo esc_attr( apply_filters( 'editable_slug', bbp_get_topic_tag_slug() ) ); ?>" />
-					</div>
+                        <input type="hidden" name="tag-id" value="<?php bbp_topic_tag_id(); ?>" />
+                        <input type="hidden" name="action" value="bbp-update-topic-tag" />
 
-					<div class="bbp-submit-wrapper">
-						<button type="submit" tabindex="<?php bbp_tab_index(); ?>" class="button submit"><?php esc_attr_e( 'Update', 'bbpress' ); ?></button>
+                        <?php wp_nonce_field('update-tag_' . bbp_get_topic_tag_id()); ?>
 
-						<input type="hidden" name="tag-id" value="<?php bbp_topic_tag_id(); ?>" />
-						<input type="hidden" name="action" value="bbp-update-topic-tag" />
+                    </div>
+                </form>
 
-						<?php wp_nonce_field( 'update-tag_' . bbp_get_topic_tag_id() ); ?>
+            </fieldset>
 
-					</div>
-				</form>
+            <fieldset class="bbp-form" id="tag-merge">
 
-			</fieldset>
+                <legend><?php esc_html_e('Merge', 'evolve'); ?></legend>
 
-			<fieldset class="bbp-form" id="tag-merge">
+                <div class="bbp-template-notice">
+                    <p><?php esc_html_e('Merging tags together cannot be undone', 'evolve'); ?></p>
+                </div>
 
-				<legend><?php _e( 'Merge', 'bbpress' ); ?></legend>
+                <form id="merge_tag" name="merge_tag" method="post" action="<?php the_permalink(); ?>">
 
-				<div class="bbp-template-notice">
-					<p><?php _e( 'Merging tags together cannot be undone.', 'bbpress' ); ?></p>
-				</div>
+                    <div>
+                        <label for="tag-existing-name"><?php esc_html_e('Existing tag:', 'evolve'); ?></label>
+                        <input type="text" id="tag-existing-name" name="tag-existing-name" size="22" tabindex="<?php bbp_tab_index(); ?>" maxlength="40" />
+                    </div>
 
-				<form id="merge_tag" name="merge_tag" method="post" action="<?php the_permalink(); ?>">
+                    <div class="bbp-submit-wrapper">
+                        <button type="submit" tabindex="<?php bbp_tab_index(); ?>" class="btn" onclick="return confirm('<?php echo esc_js(sprintf(__('Are you sure you want to merge the "%s" tag into the tag you specified?', 'evolve'), bbp_get_topic_tag_name())); ?>');"><?php esc_attr_e('Merge', 'evolve'); ?></button>
 
-					<div>
-						<label for="tag-existing-name"><?php _e( 'Existing tag:', 'bbpress' ); ?></label>
-						<input type="text" id="tag-existing-name" name="tag-existing-name" size="22" tabindex="<?php bbp_tab_index(); ?>" maxlength="40" />
-					</div>
+                        <input type="hidden" name="tag-id" value="<?php bbp_topic_tag_id(); ?>" />
+                        <input type="hidden" name="action" value="bbp-merge-topic-tag" />
 
-					<div class="bbp-submit-wrapper">
-						<button type="submit" tabindex="<?php bbp_tab_index(); ?>" class="button submit" onclick="return confirm('<?php echo esc_js( sprintf( __( 'Are you sure you want to merge the "%s" tag into the tag you specified?', 'bbpress' ), bbp_get_topic_tag_name() ) ); ?>');"><?php esc_attr_e( 'Merge', 'bbpress' ); ?></button>
+                        <?php wp_nonce_field('merge-tag_' . bbp_get_topic_tag_id()); ?>
+                    </div>
+                </form>
 
-						<input type="hidden" name="tag-id" value="<?php bbp_topic_tag_id(); ?>" />
-						<input type="hidden" name="action" value="bbp-merge-topic-tag" />
+            </fieldset>
 
-						<?php wp_nonce_field( 'merge-tag_' . bbp_get_topic_tag_id() ); ?>
-					</div>
-				</form>
+            <?php if (current_user_can('delete_topic_tags')) : ?>
 
-			</fieldset>
+                <fieldset class="bbp-form" id="delete-tag">
 
-			<?php if ( current_user_can( 'delete_topic_tags' ) ) : ?>
+                    <legend><?php esc_html_e('Delete', 'evolve'); ?></legend>
 
-				<fieldset class="bbp-form" id="delete-tag">
+                    <div class="bbp-template-notice info">
+                        <p><?php esc_html_e('This does not delete your topics. Only the tag itself is deleted.', 'evolve'); ?></p>
+                    </div>
+                    <div class="bbp-template-notice">
+                        <p><?php esc_html_e('Deleting a tag cannot be undone.', 'evolve'); ?></p>
+                        <p><?php esc_html_e('Any links to this tag will no longer function.', 'evolve'); ?></p>
+                    </div>
 
-					<legend><?php _e( 'Delete', 'bbpress' ); ?></legend>
+                    <form id="delete_tag" name="delete_tag" method="post" action="<?php the_permalink(); ?>">
 
-					<div class="bbp-template-notice info">
-						<p><?php _e( 'This does not delete your topics. Only the tag itself is deleted.', 'bbpress' ); ?></p>
-					</div>
-					<div class="bbp-template-notice">
-						<p><?php _e( 'Deleting a tag cannot be undone.', 'bbpress' ); ?></p>
-						<p><?php _e( 'Any links to this tag will no longer function.', 'bbpress' ); ?></p>
-					</div>
+                        <div class="bbp-submit-wrapper">
+                            <button type="submit" tabindex="<?php bbp_tab_index(); ?>" class="btn" onclick="return confirm('<?php echo esc_js(sprintf(__('Are you sure you want to delete the "%s" tag? This is permanent and cannot be undone.', 'evolve'), bbp_get_topic_tag_name())); ?>');"><?php esc_attr_e('Delete', 'evolve'); ?></button>
 
-					<form id="delete_tag" name="delete_tag" method="post" action="<?php the_permalink(); ?>">
+                            <input type="hidden" name="tag-id" value="<?php bbp_topic_tag_id(); ?>" />
+                            <input type="hidden" name="action" value="bbp-delete-topic-tag" />
 
-						<div class="bbp-submit-wrapper">
-							<button type="submit" tabindex="<?php bbp_tab_index(); ?>" class="button submit" onclick="return confirm('<?php echo esc_js( sprintf( __( 'Are you sure you want to delete the "%s" tag? This is permanent and cannot be undone.', 'bbpress' ), bbp_get_topic_tag_name() ) ); ?>');"><?php esc_attr_e( 'Delete', 'bbpress' ); ?></button>
+                            <?php wp_nonce_field('delete-tag_' . bbp_get_topic_tag_id()); ?>
+                        </div>
+                    </form>
 
-							<input type="hidden" name="tag-id" value="<?php bbp_topic_tag_id(); ?>" />
-							<input type="hidden" name="action" value="bbp-delete-topic-tag" />
+                </fieldset>
 
-							<?php wp_nonce_field( 'delete-tag_' . bbp_get_topic_tag_id() ); ?>
-						</div>
-					</form>
+            <?php endif; ?>
 
-				</fieldset>
+        </fieldset>
+    </div>
 
-			<?php endif; ?>
-
-		</fieldset>
-	</div>
-
-<?php endif; ?>
+    <?php
+ endif; 

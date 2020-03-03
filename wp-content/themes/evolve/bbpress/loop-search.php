@@ -1,28 +1,26 @@
 <?php
-
 /**
  * Search Loop
  *
  * @package bbPress
  * @subpackage Theme
-*/
+ */
+do_action( 'bbp_template_before_search_results_loop' ); ?>
 
-?>
+    <span class="badge badge-pill badge-info mr-2"><?php _e( 'Reply', 'evolve' ); ?></span>
+    <span class="badge badge-pill badge-secondary mr-2"><?php _e( 'Topic', 'evolve' ); ?></span>
+    <span class="badge badge-pill badge-success"><?php _e( 'Forum', 'evolve' ); ?></span>
 
-<?php do_action( 'bbp_template_before_search_results_loop' ); ?>
+    <ul class="mt-4 bbp-search-results bbp-forums">
+        <li class="bbp-body">
 
-<ul id="bbp-search-results" class="forums bbp-search-results">
+			<?php while ( bbp_search_results() ) : bbp_the_search_result();
 
-	<li class="bbp-body">
+				bbp_get_template_part( 'loop', 'search-' . get_post_type() );
 
-		<?php while ( bbp_search_results() ) : bbp_the_search_result(); ?>
+			endwhile; ?>
 
-			<?php bbp_get_template_part( 'loop', 'search-' . get_post_type() ); ?>
+        </li><!-- .bbp-body -->
+    </ul><!-- #bbp-search-results -->
 
-		<?php endwhile; ?>
-
-	</li><!-- .bbp-body -->
-
-</ul><!-- #bbp-search-results -->
-
-<?php do_action( 'bbp_template_after_search_results_loop' ); ?>
+<?php do_action( 'bbp_template_after_search_results_loop' );
